@@ -1,0 +1,9 @@
+<section>
+    <h2>Zoznam kníh</h2>
+  
+    @for (book of books; track book.id) {
+      <app-book-card [book]="book"></app-book-card>
+    } @empty {
+      <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
+    }
+  </section>
