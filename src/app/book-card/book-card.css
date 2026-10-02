@@ -1,6 +1,24 @@
 .book-card {
-    border: 1px solid #cccccc;
-    padding: 16px;
-    margin: 12px 0;
-    border-radius: 8px;
-  }
+  margin-bottom: 4px;
+  border-left: 6px solid #94a3b8;
+}
+
+.book-card p {
+  margin: 6px 0;
+  color: #475569;
+}
+
+.book-card.unavailable {
+  opacity: 0.6;
+  background-color: #f1f5f9;
+}
+
+.book-card.favorite {
+  background-color: #fffbeb;
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+.favorite-icon {
+  color: #f59e0b;
+  font-variation-settings: 'FILL' 1;
+}

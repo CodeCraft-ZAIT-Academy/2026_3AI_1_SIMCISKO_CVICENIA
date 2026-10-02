@@ -1,0 +1,13 @@
+.detail {
+    display: grid;
+    gap: 8px;
+    padding: 12px 0;
+  }
+  
+  .detail p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #475569;
+  }
