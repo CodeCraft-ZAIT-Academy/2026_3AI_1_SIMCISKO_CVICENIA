@@ -22,3 +22,29 @@
   color: #f59e0b;
   font-variation-settings: 'FILL' 1;
 }
+
+.genre-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f5f9;
+}
+
+mat-card-actions {
+  flex-wrap: wrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.confirm p {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.danger {
+  --mat-button-filled-container-color: #dc2626;
+}

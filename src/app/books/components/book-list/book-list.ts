@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BookCard } from '../book-card/book-card';
-import { Book } from '../book';
-import { generateBooks } from '../book-generator';
-import { Cart } from '../cart/cart';
+import { Book } from '../../book';
+import { generateBooks } from '../../book-generator';
+import { Cart } from '../../../cart/components/cart/cart';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { BookForm } from '../book-form/book-form';
 
 @Component({
   selector: 'app-book-list',
-  imports: [BookCard, Cart, MatButtonModule, MatIconModule],
+  imports: [BookCard, Cart, MatButtonModule, MatIconModule, MatExpansionModule,BookForm],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'
 })
@@ -50,7 +52,8 @@ export class BookList {
 
     
   ];
-
+  maxBorrowed: number = 10;
+  
   books: Book[] = this.myBooks.concat(generateBooks(40, 4));
 
   currentPage: number = 1;
@@ -91,16 +94,41 @@ export class BookList {
       };
       
       }
-
-
-
-      borrow(book: Book): void {
-        const index = this.books.indexOf(book);
-        if (index !== -1) {
-          this.books[index] = {
-            ...book,
-            available: false
-          };
-        }
+      limitBorrowed(books: Book[]): Book[] {
+        let borrowedCount = 0;
+    
+        return books.map(book => {
+          if (book.available) {
+            return book;
+          }
+    
+          borrowedCount++;
+    
+          if (borrowedCount > this.maxBorrowed) {
+            return { ...book, available: true };
+          }
+    
+          return book;
+        });
       }
-}
+    
+      borrow(book: Book): void {
+        if (this.borrowedBooks().length >= this.maxBorrowed) {
+          alert(`Naraz môžeš mať požičaných najviac ${this.maxBorrowed} kníh. Najskôr nejakú vráť.`);
+          return;
+        }
+    
+        const index = this.books.indexOf(book);
+        this.books[index] = { ...book, available: false };
+      }
+      addBook(book: Book): void {
+        const maxId = Math.max(0, ...this.books.map(b => b.id));
+        this.books = [{ ...book, id: maxId + 1 }, ...this.books];
+        this.firstPage();
+      }
+      updateBook(updated: Book): void {
+        this.books = this.books.map(book => book.id === updated.id ? updated : book);
+      }
+
+      
+    }

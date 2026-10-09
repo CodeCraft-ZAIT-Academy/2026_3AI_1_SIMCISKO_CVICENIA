@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { BookList } from './book-list/book-list';
+import { BookList } from './books/components/book-list/book-list';
 
 @Component({
   selector: 'app-root',

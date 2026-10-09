@@ -1,0 +1,76 @@
+<form #bookForm="ngForm" (ngSubmit)="save(bookForm)" class="book-form">
+    <mat-form-field>
+      <mat-label>Názov</mat-label>
+      <input matInput name="title" [(ngModel)]="draft.title" #title="ngModel" required minlength="2">
+      @if (title.hasError('required')) {
+        <mat-error>Názov je povinný.</mat-error>
+      } @else if (title.hasError('minlength')) {
+        <mat-error>Názov musí mať aspoň 2 znaky.</mat-error>
+      }
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Autor</mat-label>
+      <input matInput name="author" [(ngModel)]="draft.author" #author="ngModel"
+             required minlength="3" pattern="[^0-9]*">
+      @if (author.hasError('required')) {
+        <mat-error>Autor je povinný.</mat-error>
+      } @else if (author.hasError('minlength')) {
+        <mat-error>Meno autora musí mať aspoň 3 znaky.</mat-error>
+      } @else if (author.hasError('pattern')) {
+        <mat-error>Meno autora nesmie obsahovať číslice.</mat-error>
+      }
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Rok vydania</mat-label>
+      <input matInput type="number" name="year" [(ngModel)]="draft.year" #year="ngModel"
+             required min="1450" [max]="currentYear">
+      @if (year.hasError('required')) {
+        <mat-error>Rok vydania je povinný.</mat-error>
+      } @else if (year.hasError('min') || year.hasError('max')) {
+        <mat-error>Rok musí byť medzi 1450 a {{ currentYear }}.</mat-error>
+      }
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Počet strán</mat-label>
+      <input matInput type="number" name="pages" [(ngModel)]="draft.pages" #pages="ngModel"
+             required min="1" max="5000">
+      @if (pages.hasError('required')) {
+        <mat-error>Počet strán je povinný.</mat-error>
+      } @else if (pages.hasError('min') || pages.hasError('max')) {
+        <mat-error>Počet strán musí byť od 1 do 5000.</mat-error>
+      }
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Žáner</mat-label>
+      <mat-select name="genre" [(ngModel)]="draft.genre" #genre="ngModel" required>
+        @for (option of genres; track option) {
+          <mat-option [value]="option">{{ option }}</mat-option>
+        }
+      </mat-select>
+      @if (genre.hasError('required')) {
+        <mat-error>Vyber žáner.</mat-error>
+      }
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Hodnotenie</mat-label>
+      <mat-select name="rating" [(ngModel)]="draft.rating" required>
+        @for (option of ratings; track option) {
+          <mat-option [value]="option">{{ option }} / 5</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  
+    <div class="actions">
+        @if (isEditMode()) {
+          <button matButton type="button" (click)="cancel()">Zrušiť</button>
+        }
+        <button matButton="filled" type="submit" [disabled]="bookForm.invalid">
+          @if (isEditMode()) { Uložiť zmeny } @else { Pridať knihu }
+        </button>
+      </div>
+  </form>
