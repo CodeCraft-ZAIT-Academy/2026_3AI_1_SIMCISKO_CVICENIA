@@ -4,27 +4,51 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../book';
 import { generateBooks } from '../book-generator';
+import { Cart } from '../cart/cart';
 
 @Component({
   selector: 'app-book-list',
-  imports: [BookCard, MatButtonModule, MatIconModule],
+  imports: [BookCard, Cart, MatButtonModule, MatIconModule],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'
 })
 export class BookList {
-  myBooks: Book[] = [{
-  id: 1,
-  title: 'Hobit',
-  author: 'J. R. R. Tolkien',
-  year: 1937,
-  available: true,
-  genre: 'Fantasy',
-  rating: 5,
-  pages: 310,
-  favorite: false
-},
-// rovnako doplň knihy 2 a 3
-    // naše 3 knihy – bez zmeny
+  myBooks: Book[] = [
+    {
+      id: 1,
+      title: 'Hobit',
+      author: 'J. R. R. Tolkien',
+      year: 1937,
+      available: true,
+      genre: 'Fantasy',
+      rating: 5,
+      pages: 310,
+      favorite: false
+    },
+    {
+      id: 2,
+      title: '1984',
+      author: 'George Orwell',
+      year: 1947,
+      available: false,
+      genre: 'Dystopia',
+      rating: 5,
+      pages: 310,
+      favorite: false
+    },
+    {
+      id: 3,
+      title: 'Malý Princ',
+      author: 'Exupéry',
+      year: 1943,
+      available: true,
+      genre: 'Fiction',
+      rating: 5,
+      pages: 310,
+      favorite: false
+    },
+
+    
   ];
 
   books: Book[] = this.myBooks.concat(generateBooks(40, 4));
@@ -52,4 +76,31 @@ export class BookList {
       this.currentPage++;
     }
   }
+
+  borrowedBooks(): Book[] {
+    return this.books.filter(book => !book.available);
+    }
+
+    giveBack(book: Book): void {
+
+      const index = this.books.indexOf(book);
+      
+      this.books[index] = {
+      ...book,
+      available: true
+      };
+      
+      }
+
+
+
+      borrow(book: Book): void {
+        const index = this.books.indexOf(book);
+        if (index !== -1) {
+          this.books[index] = {
+            ...book,
+            available: false
+          };
+        }
+      }
 }

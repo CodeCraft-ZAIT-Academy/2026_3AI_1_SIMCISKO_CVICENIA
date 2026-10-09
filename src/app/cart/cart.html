@@ -1,0 +1,31 @@
+
+<mat-card [class.has-books]="books().length > 0">
+    <mat-card-header>
+      <mat-card-title class="cart-title">
+
+
+        <mat-icon>shopping_cart</mat-icon>
+
+        <span>Moje výpožičky</span>
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        Požičané knihy: {{ books().length }}
+      </mat-card-subtitle>
+
+
+    </mat-card-header>
+  
+    <mat-card-content>
+      @for (book of books(); track book.id) {
+        <div class="cart-item">
+          <span>{{ book.title }}</span>
+          <button class="vratit-btn" mat-button button="outlined" (click)="giveBack(book)">
+            Vrátiť
+          </button>
+        </div>
+      } @empty {
+        <p class="empty-cart">Zatiaľ nemáš požičanú žiadnu knihu.</p>
+      }
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,33 @@
+.cart {
+    border-left: 6px solid #cbd5e1;
+  }
+  
+  .cart.has-books {
+    border-left-color: #4f46e5;
+    background-color: #eef2ff;
+  }
+  
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+  
+  .empty {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-style: italic;
+  }
