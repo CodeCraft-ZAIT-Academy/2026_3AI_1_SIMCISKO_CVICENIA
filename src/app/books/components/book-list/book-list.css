@@ -1,13 +1,57 @@
-.pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 8px;
-  }
+section {
+  display: grid;
+  gap: 16px;
+}
 
-  mat-panel-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+h2 {
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.pagination button[matButton] {
+  min-width: 40px;
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #475569;
+}
+
+.active {
+  background-color: #1f3a5f;
+  --mat-button-text-label-text-color: white;
+}
+
+mat-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.search {
+  flex: 1;
+  min-width: 240px;
+}
+
+.empty {
+  color: #64748b;
+  font-style: italic;
+}

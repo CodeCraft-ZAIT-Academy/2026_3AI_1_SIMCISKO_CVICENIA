@@ -12,4 +12,5 @@ import { Book } from '../../book';
 })
 export class BookDetail {
   book = input.required<Book>();
+  color = input<string>('#94a3b8');
 }

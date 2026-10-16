@@ -7,9 +7,10 @@
           Pridať knihu
         </mat-panel-title>
       </mat-expansion-panel-header>
-    
+
       <app-book-form (saved)="addBook($event); addPanel.close()"></app-book-form>
     </mat-expansion-panel>
+
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -22,36 +23,90 @@
       <app-cart [books]="borrowedBooks()" (returned)="giveBack($event)"></app-cart>
     </mat-expansion-panel>
   </mat-accordion>
-  <app-cart>
-[books]="borrowedBooks()"
-(returned) ="giveBack($event)">
-</app-cart>
 
   <h2>Zoznam kníh</h2>
-  <p>V knižnici je spolu {{ books.length }} kníh.</p>
 
-  @for (book of books; track book.id; let i = $index) {
+  <div class="toolbar">
+    <mat-form-field class="search">
+      <mat-label>Hľadať podľa názvu alebo autora</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput name="search" [(ngModel)]="searchText" (ngModelChange)="firstPage()">
+      @if (searchText) {
+        <button matIconButton matSuffix (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-button-toggle-group name="availability" [(ngModel)]="availability" (ngModelChange)="firstPage()">
+      <mat-button-toggle value="all">Všetky</mat-button-toggle>
+      <mat-button-toggle value="available">Dostupné</mat-button-toggle>
+      <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-form-field>
+      <mat-label>Zoradiť podľa</mat-label>
+      <mat-select name="sortBy" [(ngModel)]="sortBy" (ngModelChange)="firstPage()">
+        <mat-option value="none">Bez zoradenia</mat-option>
+        <mat-option value="title">Názvu (A – Z)</mat-option>
+        <mat-option value="year">Roku (najnovšie)</mat-option>
+        <mat-option value="rating">Hodnotenia (najlepšie)</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (visibleBooks().length > 0) {
+    <p>Zobrazené knihy {{ firstShown() }} – {{ lastShown() }} z {{ visibleBooks().length }}</p>
+  }
+
+  <div class="page-size">
+    <span>Kníh na stranu:</span>
+    @for (size of pageSizes; track size) {
+      <button matButton [class.active]="size === pageSize" (click)="setPageSize(size)">
+        {{ size }}
+      </button>
+    }
+  </div>
+
+  @for (book of visibleBooks(); track book.id; let i = $index) {
     @if (isOnCurrentPage(i)) {
-      <app-book-card [book]="book"
-      (borrowed)="borrow(book)"
-      (returned)="giveBack(book)"
-      (edited)="updateBook($event)"></app-book-card>
+      <app-book-card
+        [book]="book"
+        (borrowed)="borrow(book)"
+        (returned)="giveBack(book)"
+        (edited)="updateBook($event)"
+        (deleted)="deleteBook(book)">
+      </app-book-card>
     }
   } @empty {
-    <p>V knižnici zatiaľ nie sú žiadne knihy.</p>
+    @if (books.length === 0) {
+      <p class="empty">V knižnici zatiaľ nie sú žiadne knihy.</p>
+    } @else {
+      <p class="empty">Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
+    }
   }
 
   <div class="pagination">
-    <button matButton="outlined" (click)="previousPage()" [disabled]="currentPage === 1">
-      <mat-icon>chevron_left</mat-icon>
-      Predošlá
+    <button matIconButton (click)="firstPage()" [disabled]="currentPage === 1">
+      <mat-icon>first_page</mat-icon>
     </button>
 
-    <span>Strana {{ currentPage }} z {{ pageCount() }}</span>
+    <button matIconButton (click)="previousPage()" [disabled]="currentPage === 1">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
 
-    <button matButton="outlined" (click)="nextPage()" [disabled]="currentPage === pageCount()">
-      Ďalšia
-      <mat-icon iconPositionEnd>chevron_right</mat-icon>
+    @for (page of pages(); track page) {
+      <button matButton [class.active]="page === currentPage" (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    }
+
+    <button matIconButton (click)="nextPage()" [disabled]="currentPage === pageCount()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <button matIconButton (click)="lastPage()" [disabled]="currentPage === pageCount()">
+      <mat-icon>last_page</mat-icon>
     </button>
   </div>
 </section>
