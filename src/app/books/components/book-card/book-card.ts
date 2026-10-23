@@ -1,62 +1,71 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Book } from '../../book';
 import { BookDetail } from '../book-detail/book-detail';
 import { BookForm } from '../book-form/book-form';
+import { getGenreColour } from '../../genre-colors';
 
 
 
 @Component({
   selector: 'app-book-card',
-  imports: [MatCardModule, MatButtonModule, MatIconModule, BookDetail, BookForm],
+  imports: [MatCardModule, BookForm, MatButtonModule, MatIconModule, BookDetail],
   templateUrl: './book-card.html',
   styleUrl: './book-card.css'
 })
 export class BookCard {
-
-  genreColor(): string {
-    switch (this.book().genre) {
-      case 'Fantasy':
-        return '#7c3aed';
-      case 'Science Fiction':
-        return '#0891b2';
-      case 'Mystery':
-        return '#ca8a04';
-      case 'Romance':
-        return '#db2777';
-      case 'Horror':
-        return '#b91c1c';
-      case 'Classic':
-        return '#92400e';
-      case "Children's Literature":
-        return '#16a34a';
-      default:
-        return '#94a3b8';
-    }
-  }
-
-
-
   book = input.required<Book>();
-
 
   borrowed = output<void>();
   returned = output<void>();
+  edited = output<Book>(); 
+  deleted = output<number>();
 
-  
-  showDetails: boolean = false;
+  readonly showDetails = signal(false);
   favorite: boolean = false;
+  readonly editing = signal(false);
+  readonly confirmingDelete = signal(false);
+
+  toggleEdit(): void {
+    this.editing.update(value => !value);
+    this.confirmingDelete.set(false);
+  }
+
+  toggleDeleteConfirm(): void {
+    this.confirmingDelete.update(value => !value);
+    this.editing.set(false);
+  }
+
+  confirmDelete(): void {
+    this.deleted.emit(this.book().id);
+  }
+
+  onSaveEdit(updatedBook: Book): void {
+    this.edited.emit(updatedBook);
+  this.editing.set(false);
+  }
+  genreColor(): string {
+    return getGenreColor(this.book().genre);
+  }
 
   toggleDetails(): void {
-    this.showDetails = !this.showDetails;
+    this.showDetails.update(open => !open);
   }
+  startEdit(): void { this.editing.set(true); }
+saveEdit(book: Book): void {
+  this.edited.emit(book);
+  this.editing.set(false);
+}
+cancelEdit(): void { this.editing.set(false); }
+askDelete(): void { this.confirmingDelete.set(true); }
+cancelDelete(): void { this.confirmingDelete.set(false); }
   
   toggleFavorite(): void {
     this.book().favorite = !this.book().favorite;
   }
-
 
   borrow(): void {
     this.borrowed.emit();
@@ -65,36 +74,6 @@ export class BookCard {
   giveBack(): void {
     this.returned.emit();
   }
-  edited = output<Book>();
-
-  editing: boolean = false;
-
-  startEdit(): void {
-    this.editing = true;
-  }
-
-  saveEdit(book: Book): void {
-    this.edited.emit(book);
-    this.editing = false;
-  }
-
-  cancelEdit(): void {
-    this.editing = false;
-  }
-  deleted = output<void>();
-
-  confirmingDelete: boolean = false;
-
-  askDelete(): void {
-    this.confirmingDelete = true;
-  }
-
-  cancelDelete(): void {
-    this.confirmingDelete = false;
-  }
-
-  confirmDelete(): void {
-    this.deleted.emit();
-  }
 }
+
 
