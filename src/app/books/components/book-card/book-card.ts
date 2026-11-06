@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Book } from '../../book';
 import { BookDetail } from '../book-detail/book-detail';
 import { BookForm } from '../book-form/book-form';
-import { getGenreColour } from '../../genre-colors';
+import { getGenreColor } from '../../../genre-colours';
 
 
 
