@@ -1,0 +1,22 @@
+<section class="server-books">
+    <h2>Knihy načítané zo servera</h2>
+  
+    @if (loading()) {
+      <p role="status">Načítavam knihy…</p>
+    }
+  
+    @if (error()) {
+      <p role="alert">{{ error() }}</p>
+    }
+  
+    @if (!loading() && !error() && books().length === 0) {
+      <p>Server zatiaľ nevrátil žiadne knihy.</p>
+    }
+  
+    @for (book of books(); track book.id) {
+      <article>
+        <h3>{{ book.title }}</h3>
+        <p>{{ book.author }} · {{ book.year }}</p>
+      </article>
+    }
+  </section>

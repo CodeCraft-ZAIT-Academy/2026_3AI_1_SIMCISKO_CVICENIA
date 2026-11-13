@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../../book';
 import { BookService } from '../../book.service';
+import { ServerBookList } from '../server-book-list/server-book-list';
 
 
 
@@ -22,6 +23,9 @@ import { BookService } from '../../book.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
+    ServerBookList,
+    BookCard,
+    FormsModule
     MatSelectModule
   ],
   templateUrl: './book-list.html',
