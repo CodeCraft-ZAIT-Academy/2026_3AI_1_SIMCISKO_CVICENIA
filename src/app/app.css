@@ -1,5 +1,27 @@
-.toolbar {
+
+  .toolbar {
+    display: flex;
     gap: 12px;
     background-color: #1f3a5f;
     color: white;
+  }
+  
+  .navigation {
+    display: flex;
+    gap: 18px;
+    margin-left: auto;
+  }
+  
+  .navigation a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .navigation a.active-link {
+    text-decoration: underline;
+    font-weight: bold;
+  }
+  
+  main {
+    padding: 20px;
   }

@@ -1,1 +1,8 @@
-<p>cart-page works!</p>
+<section>
+    <h2>Košík – moje výpožičky</h2>
+  
+    <app-cart
+      [books]="borrowedBooks()"
+      (returned)="giveBack($event)">
+    </app-cart>
+  </section>

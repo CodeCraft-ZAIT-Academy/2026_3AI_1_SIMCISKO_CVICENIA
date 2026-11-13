@@ -1,0 +1,35 @@
+<section>
+
+    @if (!isEditMode()) {
+  
+      <h2>Nová kniha</h2>
+  
+      <app-book-form
+        (saved)="save($event)">
+      </app-book-form>
+  
+    } @else if (book(); as currentBook) {
+  
+      <h2>Úprava knihy</h2>
+  
+      <app-book-form
+        [book]="currentBook"
+        (saved)="save($event)"
+        (cancelled)="cancel()">
+      </app-book-form>
+  
+    } @else {
+  
+      <h2>Kniha sa nenašla</h2>
+  
+      <p>
+        Kniha s číslom {{ id() }} v knižnici neexistuje.
+      </p>
+  
+      <a routerLink="/admin">
+        Späť na správu kníh
+      </a>
+  
+    }
+  
+  </section>

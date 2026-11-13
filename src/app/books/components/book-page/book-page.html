@@ -1,0 +1,29 @@
+<section>
+    <a routerLink="/books">← Späť na zoznam kníh</a>
+  
+    @if (book(); as currentBook) {
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            {{ currentBook.title }}
+          </mat-card-title>
+  
+          <mat-card-subtitle>
+            {{ currentBook.author }}
+          </mat-card-subtitle>
+        </mat-card-header>
+  
+        <mat-card-content>
+          <app-book-detail [book]="currentBook"></app-book-detail>
+  
+          @if (currentBook.available) {
+            <p>Kniha je dostupná.</p>
+          } @else {
+            <p>Kniha je vypožičaná.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <h2>Kniha sa nenašla</h2>
+    }
+  </section>

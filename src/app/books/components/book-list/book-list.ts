@@ -2,16 +2,12 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle'; 
 import { MatSelectModule } from '@angular/material/select'; 
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../../book';
-import { generateBooks } from '../../book-generator';
-import { Cart } from '../../../cart/components/cart/cart';
-import { BookForm } from '../book-form/book-form';
 import { BookService } from '../../book.service';
 
 
@@ -21,11 +17,8 @@ import { BookService } from '../../book.service';
   imports: [
     FormsModule,
     BookCard,
-    Cart,
-    BookForm,
     MatButtonModule,
     MatIconModule,
-    MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
@@ -36,38 +29,13 @@ import { BookService } from '../../book.service';
 })
 export class BookList {
   private bookService = inject(BookService);
-  myBooks: Book[] = [
-    { id: 1, title: 'Hobit', author: 'J. R. R. Tolkien', year: 1937, available: true, genre: 'Fantasy', rating: 5, pages: 310, favorite: false },
-    { id: 2, title: '1984', author: 'George Orwell', year: 1947, available: false, genre: 'Dystopia', rating: 5, pages: 310, favorite: false },
-    { id: 3, title: 'Malý Princ', author: 'Exupéry', year: 1943, available: true, genre: 'Fiction', rating: 5, pages: 310, favorite: false }
-  ];
-
-  readonly maxBorrowed = this.bookService.maxBorrowed;
-  books: Book[] = this.bookService.getBooks();
+ 
 
   toggleFavoriteFilter(): void {
     this.favoriteOnly.update(value => !value);
     this.firstPage();
   }
-  
 
-  limitBorrowed(books: Book[]): Book[] {
-    let borrowedCount = 0;
-
-    return books.map(book => {
-      if (book.available) {
-        return book;
-      }
-
-      borrowedCount++;
-
-      if (borrowedCount > this.maxBorrowed) {
-        return { ...book, available: true };
-      }
-
-      return book;
-    });
-  }
 
   
   readonly searchText = signal('');
@@ -140,7 +108,6 @@ previousPage(): void {
     this.currentPage.update(p => Math.min(this.pageCount(), p + 1));
   }
 
-  readonly borrowedBooks = this.bookService.borrowedBooks;
 
   borrow(book: Book): void {
     if (!this.bookService.borrowBook(book.id)) {
@@ -150,26 +117,6 @@ previousPage(): void {
   
   giveBack(book: Book): void {
     this.bookService.returnBook(book.id);
-  }
-
-  addBook(book: Book): void {
-    this.bookService.addBook(book);
-    this.firstPage();
-  }
-  
-  updateBook(updated: Book): void {
-    this.bookService.updateBook(updated);
-  }
-
-  deleteBook(deleted: Book): void {
-    this.bookService.deleteBook(deleted.id);
-    if (this.currentPage() > this.pageCount()) {
-      this.lastPage();
-    }
-  }
-
-  refreshBooks(): void {
-    this.books = this.bookService.getBooks();
   }
 
   toggleFavorite(book: Book): void {
