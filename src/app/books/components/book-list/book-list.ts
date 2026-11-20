@@ -9,61 +9,56 @@ import { MatSelectModule } from '@angular/material/select';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../../book';
 import { BookService } from '../../book.service';
-import { ServerBookList } from '../server-book-list/server-book-list';
-
-
+import { BookFilterPipe } from '../../book-filter-pipe';
 
 @Component({
   selector: 'app-book-list',
   imports: [
     FormsModule,
     BookCard,
+    BookFilterPipe,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonToggleModule,
-    ServerBookList,
-    BookCard,
-    FormsModule
     MatSelectModule
   ],
+  providers: [BookFilterPipe],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css'
 })
 export class BookList {
   private bookService = inject(BookService);
- 
+  private bookFilter = inject(BookFilterPipe);
+
+  readonly books = this.bookService.books;
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
 
   toggleFavoriteFilter(): void {
     this.favoriteOnly.update(value => !value);
     this.firstPage();
   }
 
-
-  
   readonly searchText = signal('');
   readonly availabilityFilter = signal('all');
   readonly sortBy = signal('none');
+  readonly favoriteOnly = signal(false);
 
   readonly currentPage = signal(1);
   readonly pageSize = signal(5);
   readonly pageSizes = [5, 10, 20];
 
-
-  readonly visibleBooks = computed(() => {
-    let books = this.bookService.getFilteredBooks(
+  readonly visibleBooks = computed(() =>
+    this.bookFilter.transform(
+      this.bookService.getSortedBooks(this.sortBy()),
       this.searchText(),
       this.availabilityFilter(),
-      this.sortBy()
-    );
+      this.favoriteOnly()
+    )
+  );
 
-    if (this.favoriteOnly()) {
-      books = books.filter(book => book.favorite);
-    }
-
-    return books;
-  });
   onFilterChange(): void {
     this.currentPage.set(1);
   }
@@ -72,46 +67,42 @@ export class BookList {
     this.searchText.set('');
     this.firstPage();
   }
+
   readonly totalBooks = computed(() => this.bookService.books().length);
-  readonly availableBooks = this.bookService.availableBooks;
 
   resetFilters(): void {
     this.searchText.set('');
     this.availabilityFilter.set('all');
     this.sortBy.set('none');
     this.favoriteOnly.set(false);
-        this.firstPage();
+    this.firstPage();
   }
 
-  readonly favoriteOnly = signal(false);
-  
+  readonly pageCount = computed(() =>
+    Math.max(1, Math.ceil(this.visibleBooks().length / this.pageSize()))
+  );
+  readonly firstShown = computed(() =>
+    (this.currentPage() - 1) * this.pageSize() + 1
+  );
+  readonly lastShown = computed(() =>
+    Math.min(this.currentPage() * this.pageSize(), this.visibleBooks().length)
+  );
+  readonly pages = computed(() =>
+    Array.from({ length: this.pageCount() }, (_, i) => i + 1)
+  );
 
-readonly pageCount = computed(() =>
-  Math.max(1, Math.ceil(this.visibleBooks().length / this.pageSize()))
-);
-readonly firstShown = computed(() =>
-  (this.currentPage() - 1) * this.pageSize() + 1
-);
-readonly lastShown = computed(() =>
-  Math.min(this.currentPage() * this.pageSize(), this.visibleBooks().length)
-);
-readonly pages = computed(() =>
-  Array.from({ length: this.pageCount() }, (_, i) => i + 1)
-);
+  isOnCurrentPage(index: number): boolean {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return index >= start && index < start + this.pageSize();
+  }
 
-isOnCurrentPage(index: number): boolean {
-  const start = (this.currentPage() - 1) * this.pageSize();
-  return index >= start && index < start + this.pageSize();
-}
-
-previousPage(): void {
-  this.currentPage.update(p => Math.max(1, p - 1));
-}
+  previousPage(): void {
+    this.currentPage.update(p => Math.max(1, p - 1));
+  }
 
   nextPage(): void {
     this.currentPage.update(p => Math.min(this.pageCount(), p + 1));
   }
-
 
   borrow(book: Book): void {
     if (!this.bookService.borrowBook(book.id)) {
@@ -126,20 +117,16 @@ previousPage(): void {
   toggleFavorite(book: Book): void {
     this.bookService.toggleFavorite(book.id);
   }
-  
 
   firstPage(): void { this.currentPage.set(1); }
-lastPage(): void { this.currentPage.set(this.pageCount()); }
+  lastPage(): void { this.currentPage.set(this.pageCount()); }
 
-
-goToPage(page: number): void {
-  this.currentPage.set(Math.max(1, Math.min(page, this.pageCount())));
-}
-setPageSize(size: number): void {
-  this.pageSize.set(size);
-  this.firstPage();
-}
-
-
+  goToPage(page: number): void {
+    this.currentPage.set(Math.max(1, Math.min(page, this.pageCount())));
+  }
   
+  setPageSize(size: number): void {
+    this.pageSize.set(size);
+    this.firstPage();
+  }
 }

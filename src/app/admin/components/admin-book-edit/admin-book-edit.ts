@@ -19,6 +19,9 @@ export class AdminBookEdit {
 
   id = input<string>();
 
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
+
   readonly isEditMode = computed(
     () => this.id() !== undefined
   );

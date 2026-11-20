@@ -1,26 +1,33 @@
 <section>
-    <h2>Správa kníh</h2>
-  
+  <h2>Správa kníh</h2>
+
+  @if (!loading() && !loadError()) {
     <p>
       <a matButton="filled" routerLink="/admin/new">
         <mat-icon>add</mat-icon>
         Pridať knihu
       </a>
     </p>
-  
-    <table>
-      <thead>
-        <tr>
-          <th>Číslo</th>
-          <th>Názov</th>
-          <th>Autor</th>
-          <th>Rok</th>
-          <th>Stav</th>
-          <th>Akcie</th>
-        </tr>
-      </thead>
-  
-      <tbody>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Číslo</th>
+        <th>Názov</th>
+        <th>Autor</th>
+        <th>Rok</th>
+        <th>Stav</th>
+        <th>Akcie</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (loading()) {
+        <tr><td colspan="6" role="status">Načítavam knihy…</td></tr>
+      } @else if (loadError()) {
+        <tr><td colspan="6" role="alert">{{ loadError() }}</td></tr>
+      } @else {
         @for (book of books(); track book.id) {
           <tr>
             <td>{{ book.id }}</td>
@@ -78,10 +85,11 @@
         } @empty {
           <tr>
             <td colspan="6">
-              V knižnici nie sú žiadne knihy.
+              V knižnici zatiaľ nie sú žiadne knihy.
             </td>
           </tr>
         }
-      </tbody>
-    </table>
-  </section>
+      }
+    </tbody>
+  </table>
+</section>

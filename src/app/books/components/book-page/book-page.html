@@ -1,6 +1,11 @@
 <section>
-    <a routerLink="/books">← Späť na zoznam kníh</a>
-  
+  <a routerLink="/books">← Späť na zoznam kníh</a>
+
+  @if (loading()) {
+    <p role="status">Načítavam knihu…</p>
+  } @else if (loadError()) {
+    <p role="alert">{{ loadError() }}</p>
+  } @else {
     @if (book(); as currentBook) {
       <mat-card>
         <mat-card-header>
@@ -24,6 +29,7 @@
         </mat-card-content>
       </mat-card>
     } @else {
-      <h2>Kniha sa nenašla</h2>
+      <p class="empty">Kniha v knižnici neexistuje.</p>
     }
-  </section>
+  }
+</section>

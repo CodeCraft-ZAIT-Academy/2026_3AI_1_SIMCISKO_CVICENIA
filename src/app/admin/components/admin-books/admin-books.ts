@@ -20,6 +20,8 @@ export class AdminBooks {
   private bookService = inject(BookService);
 
   readonly books = this.bookService.books;
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
 
   readonly confirmingDeleteId = signal<number | undefined>(undefined);
 
